@@ -22,6 +22,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvTipAmount: TextView
     private lateinit var tvTotalAmount: TextView
     private lateinit var tvTipDescription: TextView
+    private lateinit var tvTaxLabel: TextView
+    private lateinit var etTaxesValue: EditText
+    private lateinit var etP1BaseAmount: EditText
+    private lateinit var etP2BaseAmount: EditText
+    private lateinit var tvP1TotalAmount: TextView
+    private lateinit var tvP2TotalAmount: TextView
+    private lateinit var tvCautionMessage: TextView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,15 +40,27 @@ class MainActivity : AppCompatActivity() {
         tvTipAmount = findViewById(R.id.tvTipAmount)
         tvTotalAmount = findViewById(R.id.tvTotalAmount)
         tvTipDescription = findViewById(R.id.tvTipDescription)
+        tvTaxLabel = findViewById(R.id.tvTaxLabel)
+        etTaxesValue = findViewById(R.id.etTaxesValue)
+        etP1BaseAmount = findViewById(R.id.etP1BaseAmount)
+        etP2BaseAmount = findViewById(R.id.etP2BaseAmount)
+        tvP1TotalAmount = findViewById(R.id.tvP1TotalAmount)
+        tvP2TotalAmount = findViewById(R.id.tvP2TotalAmount)
+        tvCautionMessage = findViewById(R.id.tvCautionMessage)
+
 
         seekBarTip.progress = INITIAL_TIP_PERCENT
         tvTipPercent.text = "$INITIAL_TIP_PERCENT%"
         updateTipDescription(INITIAL_TIP_PERCENT)
+
         seekBarTip.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener{
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 Log.i(TAG, "onProgressChanged $progress")
                 tvTipPercent.text = "$progress%"
                 computeTipAndTotal()
+                computePerson1()
+                computePerson2()
+                cautionMessage()
                 updateTipDescription(progress)
             }
 
@@ -58,8 +77,48 @@ class MainActivity : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {
                 Log.i(TAG,"afterTextChanged $s")
                 computeTipAndTotal()
+                computePerson1()
+                computePerson2()
+                cautionMessage()
+
             }
 
+        })
+
+        etTaxesValue.addTextChangedListener(object:TextWatcher{
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                Log.i(TAG, "afterTaxChanged $s")
+                computeTipAndTotal()
+                computePerson1()
+                computePerson2()
+                cautionMessage()
+            }
+        })
+
+        etP1BaseAmount.addTextChangedListener(object:TextWatcher{
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                computePerson1()
+                cautionMessage()
+            }
+        })
+
+        etP2BaseAmount.addTextChangedListener(object:TextWatcher{
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                computePerson2()
+                cautionMessage()
+            }
         })
     }
 
@@ -86,22 +145,72 @@ class MainActivity : AppCompatActivity() {
 
     private fun computeTipAndTotal() {
         // 0. Check if etBillAmount is 0
-        if(etBillAmount.text.isEmpty()){
+        if(etBillAmount.text.isEmpty() || etTaxesValue.text.isEmpty()){
             tvTipAmount.text = ""
             tvTotalAmount.text = ""
             return
         }
 
         // 1. Get the value of the base and tip percent
-        val Bill = etBillAmount.text.toString().toDouble()
+        val Base = etBillAmount.text.toString().toDouble()
+        val Tax = etTaxesValue.text.toString().toDouble()
+        val TotalBill = Base + Tax
         val TipPercent = seekBarTip.progress
         // 2. Compute the tip and total
-        val Tip = Bill * TipPercent / 100
-        val Total = Bill + Tip
+        val Tip = TotalBill * TipPercent / 100
+        val Total = TotalBill + Tip
         // 3. Update the UI
         tvTipAmount.text = "%.2f".format(Tip)
         tvTotalAmount.text = "%.2f".format(Total)
 
 
     }
+
+    private fun computePerson1() {
+        // 0. Check if etP1BaseAmount is 0
+        if(etP1BaseAmount.text.isEmpty()) {
+            tvP1TotalAmount.text = ""
+            return
+        }
+
+        val Base1 = etBillAmount.text.toString().toDouble()
+        val BaseP1 = etP1BaseAmount.text.toString().toDouble()
+        val Tax1 = etTaxesValue.text.toString().toDouble()
+        val Tip1 = tvTipAmount.text.toString().toDouble()
+        val TotalP1 = (BaseP1/Base1)*(Tax1+Tip1) + BaseP1
+        tvP1TotalAmount.text = "%.2f".format(TotalP1)
+    }
+
+    private fun computePerson2() {
+        // 0. Check if etP1BaseAmount is 0
+        if (etP2BaseAmount.text.isEmpty()) {
+            tvP2TotalAmount.text = ""
+            return
+        }
+
+        val Base1 = etBillAmount.text.toString().toDouble()
+        val BaseP2 = etP2BaseAmount.text.toString().toDouble()
+        val Tax1 = etTaxesValue.text.toString().toDouble()
+        val Tip1 = tvTipAmount.text.toString().toDouble()
+        val TotalP2 = (BaseP2 / Base1) * (Tax1 + Tip1) + BaseP2
+        tvP2TotalAmount.text = "%.2f".format(TotalP2)
+
+    }
+
+    private fun cautionMessage() {
+        if (tvP2TotalAmount.text.isEmpty() || tvP1TotalAmount.text.isEmpty()) {
+            tvCautionMessage.text = ""
+            return
+        }
+
+        val BaseP1 = etP1BaseAmount.text.toString().toDouble()
+        val BaseP2 = etP2BaseAmount.text.toString().toDouble()
+        val Base = etBillAmount.text.toString().toDouble()
+        if (BaseP1 + BaseP2 == Base) {
+            tvCautionMessage.text = ""
+        } else {
+            tvCautionMessage.text = "The breakdown does not add up to Total Bill"
+        }
+    }
+
 }
