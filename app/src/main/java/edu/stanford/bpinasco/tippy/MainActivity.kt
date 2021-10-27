@@ -209,7 +209,7 @@ class MainActivity : AppCompatActivity() {
         if (BaseP1 + BaseP2 == Base) {
             tvCautionMessage.text = ""
         } else {
-            tvCautionMessage.text = "The breakdown does not add up to Total Bill"
+            tvCautionMessage.text = "Breakdown does not add up to total bill"
         }
     }
 
