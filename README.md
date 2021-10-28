@@ -1,36 +1,29 @@
-# Tip Calculator
+# Bill & Tip Calculator
 
-## *Bianca Pinasco*
+## Bianca Pinasco
 
-**Tippy** computes the tip and total amount for a bill. The app uses the base amount and tip percentage to calculate the amount owed, and it also describes the quality of service based on the tip.
+**Tippy** computes the tip and total amount for a bill, and breaks this bill down per person. The app uses the base amount and tip percentage to calculate the amount owed, and it also describes the quality of service based on the tip.
 
-Time spent: **4** hours spent in total
+Time spent: 12 hours spent in total
 
 ## Functionality
 
-The following **required** functionality is completed:
+The following functionality is completed:
 
 * [x] User can enter in a bill amount (total amount to tip on)
 * [x] User can enter a tip percentage (what % the user wants to tip).
 * [x] The tip and total amount are updated immediately when any of the inputs changes.
 * [x] The user sees a label or color update based on the tip amount.
-
-The following **extensions** are implemented:
-
-* [ ] Custom colors palette selected
-* [ ] List anything else that you did to improve the app functionality or design!
+* [x] The user can enter the bill amount for each of two people.
+* [x] The total amount is updated immediately for each person.
 
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
 
-<img src='https://j.gifs.com/6W0g6R.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='https://j.gifs.com/yw6Dz6.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
-GIF created with [LiceCap](http://www.cockos.com/licecap/).
-
-## Notes
-
-Describe any challenges encountered while building the app.
+GIF created with [gifs](http://www.gifs.com).
 
 ## License
 
