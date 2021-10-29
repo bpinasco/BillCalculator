@@ -48,6 +48,7 @@ class MainActivity : AppCompatActivity() {
         tvP2TotalAmount = findViewById(R.id.tvP2TotalAmount)
         tvCautionMessage = findViewById(R.id.tvCautionMessage)
 
+        supportActionBar?.title = "Split my date bill"
 
         seekBarTip.progress = INITIAL_TIP_PERCENT
         tvTipPercent.text = "$INITIAL_TIP_PERCENT%"
